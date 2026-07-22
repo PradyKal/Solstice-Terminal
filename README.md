@@ -1,4 +1,4 @@
-# Solstice Terminal — Quantitative Intelligence Engine
+# Solstice Terminal: Mathematical Modeling Platform
 
 Institutional-grade backend for the Solstice Tool Terminal. Continuous market analysis, deterministic strategy stack, advanced simulations, visualization-ready outputs, and risk-gated paper execution via Alpaca.
 
