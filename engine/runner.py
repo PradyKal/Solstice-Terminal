@@ -44,7 +44,7 @@ def alpaca(method, path, body=None):
     if body: kw['data'] = json.dumps(body)
     r = fn(f'{ALPACA_BASE}{path}', **kw)
     try: return r.json() if r.text else {}
-    except: return {'raw': r.text}
+    except ValueError: return {'raw': r.text}
 
 def clock():        return alpaca('GET','/clock')
 def account():      return alpaca('GET','/account')
