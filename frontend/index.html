@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Solstice Terminal · Quantitative Finance & Monte Carlo Simulation</title>
-  <meta name="description" content="A quantitative finance platform for stochastic modeling, scenario analysis, and Monte Carlo simulation — exploring the full range of possible market outcomes." />
+  <title>Solstice Terminal · Mathematical Modeling Platform</title>
+  <meta name="description" content="Solstice Terminal models uncertainty and outcomes in financial markets using stochastic modeling, scenario analysis, and Monte Carlo simulation." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -17,7 +17,6 @@
     <div class="grid-mask"></div>
   </div>
 
-  <!-- NAV -->
   <header class="nav" id="nav">
     <div class="nav-inner">
       <a class="brand" href="index.html">
@@ -25,133 +24,46 @@
         <span class="brand-name">SOLSTICE</span>
         <span class="brand-sub">TERMINAL</span>
       </a>
-      <nav class="nav-links">
-        <a href="#what">What it does</a>
-        <a href="#why">Why it matters</a>
-      </nav>
       <div class="nav-cta">
-        <a class="btn btn-ghost" href="#what">Learn More</a>
         <a class="btn btn-primary" href="login.html">Login</a>
       </div>
     </div>
   </header>
 
   <main>
-    <!-- HERO (compact) -->
     <section class="hero">
-      <div class="eyebrow"><span class="eyebrow-dot"></span> QUANTITATIVE&nbsp;FINANCE&nbsp;·&nbsp;MONTE&nbsp;CARLO&nbsp;SIMULATION</div>
       <h1 class="hero-title">Solstice&nbsp;Terminal</h1>
       <div class="hero-tagline grad-text">Mathematical Modeling Platform</div>
       <p class="hero-sub">
-        Solstice Terminal models uncertainty and outcomes in financial markets — using
-        stochastic modeling, scenario analysis, and Monte&nbsp;Carlo simulation to show the
-        full range of what could happen instead of a single prediction.
+        Models uncertainty and outcomes in financial markets with stochastic modeling,
+        scenario analysis, and Monte&nbsp;Carlo simulation (100K+ paths per scenario).
       </p>
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="login.html">Login<span class="btn-arrow">→</span></a>
-        <a class="btn btn-ghost btn-lg" href="#what">Learn More</a>
       </div>
 
-      <!-- Metrics strip, right under the hero -->
       <div class="metrics">
         <div class="metric"><div class="metric-big grad-text">100K+</div><div class="metric-cap">Simulations / scenario</div></div>
-        <div class="metric"><div class="metric-big grad-text">794</div><div class="metric-cap">Assets in the universe</div></div>
+        <div class="metric"><div class="metric-big grad-text">794</div><div class="metric-cap">Assets</div></div>
         <div class="metric"><div class="metric-big grad-text">7</div><div class="metric-cap">Strategy modules</div></div>
-        <div class="metric"><div class="metric-big grad-text">21d</div><div class="metric-cap">Horizon modeled</div></div>
+        <div class="metric"><div class="metric-big grad-text">21d</div><div class="metric-cap">Horizon</div></div>
       </div>
     </section>
 
-    <!-- WHAT IT DOES -->
-    <section class="section" id="what">
-      <div class="section-head reveal" data-reveal="up">
-        <h2 class="section-title">What it does</h2>
-        <p class="section-lead">The core capabilities, kept simple.</p>
-      </div>
-      <div class="feature-grid">
-        <article class="feature reveal" data-reveal="up">
-          <h3>Monte Carlo simulation</h3>
-          <p>Runs 100K+ simulated price paths per scenario to map where an asset could realistically end up.</p>
+    <section class="section what-short" id="what">
+      <div class="feature-grid compact">
+        <article class="feature">
+          <h3>Monte Carlo</h3>
+          <p>100K+ simulated paths per scenario.</p>
         </article>
-        <article class="feature reveal" data-reveal="up" data-delay="60">
-          <h3>Scenario analysis</h3>
-          <p>Tests how portfolios behave under different market and volatility conditions.</p>
+        <article class="feature">
+          <h3>Scenarios</h3>
+          <p>Stress tests under different market conditions.</p>
         </article>
-        <article class="feature reveal" data-reveal="up" data-delay="120">
-          <h3>Risk modeling</h3>
-          <p>Turns uncertainty into numbers — VaR, CVaR, and probability of loss.</p>
+        <article class="feature">
+          <h3>Risk</h3>
+          <p>VaR, CVaR, and probability of loss.</p>
         </article>
-        <article class="feature reveal" data-reveal="up">
-          <h3>Distributions &amp; intervals</h3>
-          <p>Visualizes outcome ranges and confidence intervals, not just a point estimate.</p>
-        </article>
-        <article class="feature reveal" data-reveal="up" data-delay="60">
-          <h3>Portfolio insights</h3>
-          <p>Shows expected return alongside downside exposure for each position.</p>
-        </article>
-        <article class="feature reveal" data-reveal="up" data-delay="120">
-          <h3>Research workspace</h3>
-          <p>A place to organize quantitative experiments and investment ideas.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- INTERACTIVE (single calm distribution) -->
-    <section class="section interactive" id="interactive">
-      <div class="interactive-inner">
-        <div class="interactive-copy reveal" data-reveal="left">
-          <h2 class="section-title">A range of outcomes, not a single guess</h2>
-          <p class="section-lead">
-            Every scenario is drawn from thousands of simulated paths. The distribution
-            shows what's likely, what's possible, and how confident the estimate is.
-          </p>
-          <div class="counter-row">
-            <div class="counter"><div class="counter-val" data-count="10000">0</div><div class="counter-cap">Paths / scenario</div></div>
-            <div class="counter"><div class="counter-val" data-count="95" data-suffix="%">0%</div><div class="counter-cap">Confidence band</div></div>
-            <div class="counter"><div class="counter-val" data-count="21" data-suffix="d">0d</div><div class="counter-cap">Horizon modeled</div></div>
-          </div>
-        </div>
-        <div class="interactive-viz glass reveal" data-reveal="right">
-          <div class="panel-label">PROBABILITY DISTRIBUTION</div>
-          <canvas id="bigDist" width="520" height="260"></canvas>
-          <div class="ci-legend">
-            <span><i class="ci ci-90"></i> 90% interval</span>
-            <span><i class="ci ci-50"></i> 50% interval</span>
-            <span><i class="ci ci-mean"></i> expected</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- WHY IT MATTERS -->
-    <section class="section why" id="why">
-      <div class="section-head reveal" data-reveal="up">
-        <h2 class="section-title">Why it matters</h2>
-      </div>
-      <div class="why-grid">
-        <div class="why-card reveal" data-reveal="up">
-          <h3>Better decisions</h3>
-          <p>Weigh choices against the full spread of what could happen, not one forecast.</p>
-        </div>
-        <div class="why-card reveal" data-reveal="up" data-delay="80">
-          <h3>Understand uncertainty</h3>
-          <p>Turn ambiguity into measurable probability instead of a single number.</p>
-        </div>
-        <div class="why-card reveal" data-reveal="up" data-delay="160">
-          <h3>See possible outcomes</h3>
-          <p>Explore ranges of futures rather than brittle point predictions.</p>
-        </div>
-        <div class="why-card reveal" data-reveal="up" data-delay="240">
-          <h3>Made intuitive</h3>
-          <p>Rigorous quantitative methods, presented so they're easy to understand and use.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- FINAL CTA -->
-    <section class="final-cta">
-      <div class="final-inner reveal" data-reveal="up">
-        <h2 class="final-title">Explore every possible outcome.</h2>
-        <a class="btn btn-primary btn-lg" href="login.html">Login<span class="btn-arrow">→</span></a>
       </div>
     </section>
   </main>
