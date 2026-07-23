@@ -3,105 +3,260 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SOLSTICE TERMINAL · Quantitative Intelligence System</title>
-  <link rel="stylesheet" href="css/styles.css" />
+  <title>Solstice Terminal · Quantitative Finance & Stochastic Modeling</title>
+  <meta name="description" content="A modern quantitative finance platform built for stochastic modeling, scenario analysis, and institutional-grade Monte Carlo simulation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/landing.css" />
 </head>
-<body class="home">
-  <div class="home-wrap">
-
-    <div class="home-bar bracket">
-      <div class="home-logo">SOLSTICE</div>
-      <div class="home-status">
-        <span><span class="ok"></span> ENGINE</span>
-        <span><span class="ok"></span> ALPACA</span>
-        <span><span class="ok"></span> SUPABASE</span>
-        <span><span class="ok"></span> SLACK</span>
-      </div>
-    </div>
-
-    <section class="home-hero">
-      <div class="home-hero-text">
-        <div class="home-eyebrow">QUANTITATIVE&nbsp;INTELLIGENCE&nbsp;SYSTEM</div>
-        <h1 class="home-title">SOLSTICE<br>TERMINAL</h1>
-        <p class="home-sub">
-          An autonomous <em>institutional-grade</em> quantitative research desk built on a deterministic strategy stack, vectorized 100K-path Monte-Carlo simulation, ATR-scaled risk engine, and live Alpaca paper execution. Continuous cross-sectional alpha discovery across <em>794 assets</em> · stocks, ETFs, futures, crypto.
-        </p>
-        <a href="login.html" class="home-enter">INITIATE&nbsp;TERMINAL&nbsp;ACCESS</a>
-      </div>
-
-      <div class="home-arch">
-        <img src="assets/architecture.png" alt="Solstice Architecture" />
-        <div class="home-arch-label">SYSTEM&nbsp;ARCHITECTURE</div>
-      </div>
-    </section>
-
-    <section class="home-stats">
-      <div class="home-stat bracket">
-        <div class="v">794</div>
-        <div class="l">ASSET UNIVERSE</div>
-      </div>
-      <div class="home-stat bracket">
-        <div class="v">100K</div>
-        <div class="l">MC PATHS / TICK</div>
-      </div>
-      <div class="home-stat bracket">
-        <div class="v">7</div>
-        <div class="l">STRATEGY MODULES</div>
-      </div>
-      <div class="home-stat bracket">
-        <div class="v">15m</div>
-        <div class="l">CYCLE INTERVAL</div>
-      </div>
-      <div class="home-stat bracket">
-        <div class="v">300</div>
-        <div class="l">LIQUIDITY SCREEN</div>
-      </div>
-      <div class="home-stat bracket">
-        <div class="v" id="stat-latency">—</div>
-        <div class="l">LAST CYCLE</div>
-      </div>
-    </section>
-
-    <section class="home-explain">
-      <div class="home-card bracket">
-        <div class="home-card-h">DATA INGESTION</div>
-        <p>Continuous OHLCV ingest across <span class="cyan">stocks, ETFs, crypto, futures</span>. Liquidity-ranked top 300 by 5-day dollar volume. Alpaca account state mirrored every cycle.</p>
-      </div>
-      <div class="home-card bracket">
-        <div class="home-card-h">DECISION ENGINE</div>
-        <p>Deterministic strategy stack — momentum, mean reversion, vol breakout, trend, RS, flow, regime-sensitive. Meta-model with weekly inverse-vol rebalancing. <span class="cyan">No mid-run self-modification.</span></p>
-      </div>
-      <div class="home-card bracket">
-        <div class="home-card-h">RISK + EXECUTION</div>
-        <p>ATR volatility sizing · $100k portfolio heat cap · $5M ADV floor · 30-min cooldown · market-hours gated paper execution via Alpaca REST.</p>
-      </div>
-    </section>
-
-    <footer class="home-foot">
-      <div>BUILD · v5.0 · PRODUCTION</div>
-      <div class="home-foot-links" id="home-links"></div>
-    </footer>
+<body class="landing">
+  <!-- ambient background glows -->
+  <div class="bg-field" aria-hidden="true">
+    <div class="glow glow-a"></div>
+    <div class="glow glow-b"></div>
+    <div class="glow glow-c"></div>
+    <div class="grid-mask"></div>
   </div>
 
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <div class="nav-inner">
+      <a class="brand" href="index.html">
+        <span class="brand-mark"></span>
+        <span class="brand-name">SOLSTICE</span>
+        <span class="brand-sub">TERMINAL</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Platform</a>
+        <a href="#interactive">Simulation</a>
+        <a href="#why">Why it matters</a>
+      </nav>
+      <div class="nav-cta">
+        <span class="status-dot" title="Systems operational"></span>
+        <a class="btn btn-ghost" href="#features">Learn More</a>
+        <a class="btn btn-primary" href="login.html">Get Started</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-copy reveal" data-reveal="up">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> QUANTITATIVE&nbsp;FINANCE&nbsp;·&nbsp;UNCERTAINTY&nbsp;MODELING</div>
+        <h1 class="hero-title">
+          Model Uncertainty.<br />
+          Quantify Risk.<br />
+          <span class="grad-text">Make Better Decisions.</span>
+        </h1>
+        <p class="hero-sub">
+          A modern quantitative finance platform built for stochastic modeling,
+          scenario analysis, and institutional-grade Monte Carlo simulation.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary btn-lg" href="login.html">Get Started<span class="btn-arrow">→</span></a>
+          <a class="btn btn-ghost btn-lg" href="#features">Learn More</a>
+        </div>
+        <div class="hero-trustline">
+          <span>Institutional research workflow</span>
+          <span class="sep">·</span>
+          <span>2B+ simulations</span>
+          <span class="sep">·</span>
+          <span>Two 2nd-place finishes at CLIMB</span>
+        </div>
+      </div>
+
+      <!-- ANIMATED DASHBOARD MOCKUP -->
+      <div class="hero-visual reveal" data-reveal="scale">
+        <div class="dash glass">
+          <div class="dash-bar">
+            <span class="dash-title">SCENARIO&nbsp;ENGINE</span>
+            <span class="dash-live"><i></i> LIVE</span>
+          </div>
+          <div class="dash-grid">
+            <div class="dash-panel dash-dist">
+              <div class="panel-label">MONTE CARLO DISTRIBUTION</div>
+              <canvas id="mcDist" width="520" height="230"></canvas>
+            </div>
+            <div class="dash-side">
+              <div class="dash-panel dash-metric">
+                <div class="panel-label">EXPECTED RETURN</div>
+                <div class="metric-value" data-count="18.4" data-suffix="%">0%</div>
+                <div class="metric-spark"><canvas id="sparkA" width="180" height="44"></canvas></div>
+              </div>
+              <div class="dash-panel dash-metric">
+                <div class="panel-label">95% CVaR</div>
+                <div class="metric-value neg" data-count="-7.2" data-suffix="%">0%</div>
+                <div class="metric-spark"><canvas id="sparkB" width="180" height="44"></canvas></div>
+              </div>
+            </div>
+            <div class="dash-panel dash-growth">
+              <div class="panel-label">PORTFOLIO GROWTH · 10K PATHS</div>
+              <canvas id="mcPaths" width="520" height="150"></canvas>
+            </div>
+            <div class="dash-panel dash-heat">
+              <div class="panel-label">RISK HEATMAP</div>
+              <div class="heat" id="heat"></div>
+            </div>
+          </div>
+        </div>
+        <div class="scenario-chip chip-1 float">P(drawdown &gt; 10%) · <b>6.1%</b></div>
+        <div class="scenario-chip chip-2 float">Sharpe · <b>2.34</b></div>
+        <div class="scenario-chip chip-3 float">Confidence · <b>95%</b></div>
+      </div>
+    </section>
+
+    <!-- TRUST METRICS -->
+    <section class="metrics">
+      <div class="metric reveal" data-reveal="up">
+        <div class="metric-big grad-text">2B+</div>
+        <div class="metric-cap">Monte Carlo Simulations</div>
+      </div>
+      <div class="metric reveal" data-reveal="up" data-delay="80">
+        <div class="metric-big grad-text">Millions</div>
+        <div class="metric-cap">Scenarios Evaluated</div>
+      </div>
+      <div class="metric reveal" data-reveal="up" data-delay="160">
+        <div class="metric-big grad-text">Institutional</div>
+        <div class="metric-cap">Research Workflow</div>
+      </div>
+      <div class="metric reveal" data-reveal="up" data-delay="240">
+        <div class="metric-big grad-text">Powered</div>
+        <div class="metric-cap">Competition Research</div>
+      </div>
+    </section>
+
+    <!-- FEATURE GRID -->
+    <section class="section" id="features">
+      <div class="section-head reveal" data-reveal="up">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> CAPABILITIES</div>
+        <h2 class="section-title">Everything you need to reason about uncertainty.</h2>
+        <p class="section-lead">A complete quantitative research surface — from raw market data to probability-weighted decisions.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature glass reveal" data-reveal="up">
+          <div class="feature-icon">◈</div>
+          <h3>Monte Carlo Simulation</h3>
+          <p>Run billions of vectorized simulations across uncertain market environments.</p>
+        </article>
+        <article class="feature glass reveal" data-reveal="up" data-delay="60">
+          <div class="feature-icon">◇</div>
+          <h3>Scenario Analysis</h3>
+          <p>Stress test portfolios under changing macroeconomic conditions.</p>
+        </article>
+        <article class="feature glass reveal" data-reveal="up" data-delay="120">
+          <div class="feature-icon">▲</div>
+          <h3>Risk Modeling</h3>
+          <p>Quantify uncertainty with probability-based forecasts.</p>
+        </article>
+        <article class="feature glass reveal" data-reveal="up" data-delay="60">
+          <div class="feature-icon">◉</div>
+          <h3>Interactive Analytics</h3>
+          <p>Visualize distributions, confidence intervals, and outcome ranges.</p>
+        </article>
+        <article class="feature glass reveal" data-reveal="up" data-delay="120">
+          <div class="feature-icon">❖</div>
+          <h3>Portfolio Insights</h3>
+          <p>Understand expected return and downside exposure.</p>
+        </article>
+        <article class="feature glass reveal" data-reveal="up" data-delay="180">
+          <div class="feature-icon">⬡</div>
+          <h3>Research Workspace</h3>
+          <p>Organize quantitative experiments and investment theses.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE SECTION -->
+    <section class="section interactive" id="interactive">
+      <div class="interactive-inner">
+        <div class="interactive-copy reveal" data-reveal="left">
+          <div class="eyebrow"><span class="eyebrow-dot"></span> DISTRIBUTION ENGINE</div>
+          <h2 class="section-title">See the full range of outcomes — not a single guess.</h2>
+          <p class="section-lead">
+            Every scenario is drawn from thousands of simulated paths. As the distribution
+            forms, confidence intervals tighten and the probabilities behind each decision
+            become clear.
+          </p>
+          <div class="counter-row">
+            <div class="counter">
+              <div class="counter-val" data-count="10000" data-suffix="">0</div>
+              <div class="counter-cap">Paths / scenario</div>
+            </div>
+            <div class="counter">
+              <div class="counter-val" data-count="95" data-suffix="%">0%</div>
+              <div class="counter-cap">Confidence band</div>
+            </div>
+            <div class="counter">
+              <div class="counter-val" data-count="21" data-suffix="d">0d</div>
+              <div class="counter-cap">Horizon modeled</div>
+            </div>
+          </div>
+        </div>
+        <div class="interactive-viz glass reveal" data-reveal="right">
+          <div class="panel-label">PROBABILITY DISTRIBUTION · SELF-DRAWING</div>
+          <canvas id="bigDist" width="560" height="320"></canvas>
+          <div class="ci-legend">
+            <span><i class="ci ci-90"></i> 90% interval</span>
+            <span><i class="ci ci-50"></i> 50% interval</span>
+            <span><i class="ci ci-mean"></i> expected</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WHY IT MATTERS -->
+    <section class="section why" id="why">
+      <div class="section-head reveal" data-reveal="up">
+        <div class="eyebrow"><span class="eyebrow-dot"></span> WHY IT MATTERS</div>
+        <h2 class="section-title">Institutional-quality analysis, made intuitive.</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-card reveal" data-reveal="up">
+          <h3>Better investment decisions</h3>
+          <p>Weigh every choice against the full spread of what could happen, not a single forecast.</p>
+        </div>
+        <div class="why-card reveal" data-reveal="up" data-delay="80">
+          <h3>Understand uncertainty</h3>
+          <p>Turn ambiguity into measurable probability — clarity where most tools only give a number.</p>
+        </div>
+        <div class="why-card reveal" data-reveal="up" data-delay="160">
+          <h3>See possible outcomes</h3>
+          <p>Explore ranges of futures instead of brittle point predictions that break under stress.</p>
+        </div>
+        <div class="why-card reveal" data-reveal="up" data-delay="240">
+          <h3>Made intuitive</h3>
+          <p>The rigor of a quant desk, presented so researchers, investors, and students can act on it.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section class="final-cta">
+      <div class="final-inner reveal" data-reveal="scale">
+        <h2 class="final-title">Explore Every Possible Outcome.</h2>
+        <p class="final-sub">Step into the terminal and put uncertainty to work.</p>
+        <a class="btn btn-primary btn-xl" href="login.html">Launch Platform<span class="btn-arrow">→</span></a>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="foot">
+    <div class="foot-inner">
+      <div class="foot-brand">
+        <span class="brand-name">SOLSTICE</span> <span class="brand-sub">TERMINAL</span>
+        <div class="foot-meta">BUILD · v5.0 · PRODUCTION · <span id="stat-latency">—</span> since last cycle</div>
+      </div>
+      <div class="foot-links" id="home-links"></div>
+    </div>
+  </footer>
+
+  <!-- Supabase client (shared, unchanged) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/config.js"></script>
-  <script>
-    window.solstice.particles(40);
-    (async () => {
-      try {
-        const client = window.solstice.sb();
-        const { data } = await client.from('landing_links').select('label,url').order('sort_order');
-        document.getElementById('home-links').innerHTML = (data || [])
-          .map(l => `<a href="${l.url}" target="_blank" rel="noopener">${l.label}</a>`).join('');
-        const { data: logs } = await client.from('logs').select('created_at')
-          .order('created_at', { ascending: false }).limit(1);
-        if (logs?.[0]) {
-          const min = Math.floor((Date.now() - new Date(logs[0].created_at).getTime()) / 60000);
-          document.getElementById('stat-latency').textContent =
-            min < 1 ? '<1m' : (min < 60 ? min + 'm' : Math.floor(min/60) + 'h');
-        }
-      } catch (_) {}
-    })();
-  </script>
+  <!-- Landing-only animation + data script -->
+  <script src="js/landing.js"></script>
 </body>
 </html>
