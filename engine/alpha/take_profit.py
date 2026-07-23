@@ -47,7 +47,7 @@ def manage_profits(alpaca_base, headers, dry_run=False):
         if body: kw['data'] = json.dumps(body)
         r = fn(f'{alpaca_base}{path}', **kw)
         try: return r.json() if r.text else {}
-        except: return {'raw': r.text}
+        except ValueError: return {'raw': r.text}
 
     positions = alp('GET', '/positions')
     if not isinstance(positions, list):

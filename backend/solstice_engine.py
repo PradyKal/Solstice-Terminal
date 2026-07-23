@@ -21,6 +21,7 @@ import os
 import json
 import time
 import math
+import traceback
 from datetime import datetime
 import pytz
 import numpy as np
@@ -54,10 +55,21 @@ EXECUTE_MIN_CONF     = float(os.getenv("SOLSTICE_MIN_CONF", "0.75"))
 
 def classify_regime(spy_df: pd.DataFrame, vix_df: pd.DataFrame | None) -> dict:
     close = spy_df["Close"].values
+    if close is None or len(close) == 0:
+        return {"regime": "neutral", "vix": None, "realized_vol_20d": 0.0}
     sma20 = float(np.mean(close[-20:]))
-    sma50 = float(np.mean(close[-50:]))
-    r20 = float((close[-1] / close[-20] - 1)) if len(close) >= 20 else 0.0
-    realized = float(np.std(np.diff(close[-20:]) / close[-21:-1])) if len(close) >= 21 else 0.0
+    sma50 = float(np.mean(close[-50:])) if len(close) >= 50 else sma20
+    r20 = float((close[-1] / close[-20] - 1)) if len(close) >= 20 and close[-20] else 0.0
+    if len(close) >= 21:
+        # 20 daily returns from the last 21 closes. (Original code divided a
+        # 19-length diff by a 20-length denominator, which raised ValueError.)
+        seg = close[-21:].astype(float)
+        denom = seg[:-1]
+        step = np.divide(np.diff(seg), denom,
+                         out=np.zeros_like(denom, dtype=float), where=denom != 0)
+        realized = float(np.std(step[np.isfinite(step)])) if step.size else 0.0
+    else:
+        realized = 0.0
     vix_level = None
     if vix_df is not None and "Close" in vix_df.columns:
         vix_level = float(vix_df["Close"].iloc[-1])
@@ -115,11 +127,16 @@ def run_cycle() -> dict:
         df = prices.get(t)
         if df is None or len(df) < 50:
             continue
-        feats = fe.compute_features(df, market_returns)
-        if not feats:
+        # Per-asset fault isolation: one bad ticker must never abort the cycle.
+        try:
+            feats = fe.compute_features(df, market_returns)
+            if not feats:
+                continue
+            strat_out = se.run_all(feats, cohort_ret_20d, regime)
+            combined = mm.combine(strat_out)
+        except Exception:
+            cycle.setdefault("asset_errors", []).append(t)
             continue
-        strat_out = se.run_all(feats, cohort_ret_20d, regime)
-        combined = mm.combine(strat_out)
 
         adv_usd = float((df["Close"].tail(5) * df["Volume"].tail(5)).mean()) \
                     if "Volume" in df.columns else 0.0
@@ -151,8 +168,15 @@ def run_cycle() -> dict:
     simulations_rows = []
     mc_path_clouds = []
     for r in topN:
+      try:
         c = prices[r["ticker"]]["Close"].values
+        c = c[c > 0]
+        if len(c) < 2:
+            continue
         ret = np.diff(c) / c[:-1]
+        ret = ret[np.isfinite(ret)]
+        if len(ret) < 2:
+            continue
         mu, sigma = float(np.mean(ret[-60:])), float(np.std(ret[-60:]))
         if not (math.isfinite(mu) and math.isfinite(sigma) and sigma > 0):
             continue
@@ -182,6 +206,9 @@ def run_cycle() -> dict:
             "scope": "topN",
             "payload": {"horizon": MC_HORIZON_DAYS, "paths": s["path_sample"]},
         })
+      except Exception:
+        cycle.setdefault("sim_errors", []).append(r["ticker"])
+        continue
 
     # 8. RISK ENGINE
     R = risk.RiskEngine()
@@ -404,6 +431,29 @@ def run_cycle() -> dict:
     return cycle
 
 
+def run_cycle_safe() -> dict:
+    """Crash-safe entry point for the scheduler.
+
+    Wraps run_cycle() so an unexpected failure in any stage never takes the
+    whole scheduled run down: the error + traceback are logged to Supabase
+    (best-effort) and returned in a structured dict instead of raising.
+    """
+    try:
+        return run_cycle()
+    except Exception as e:
+        tb = traceback.format_exc()
+        err = {"ok": False, "error": str(e), "traceback": tb[-2000:],
+               "timestamp_et": datetime.now(pytz.timezone("US/Eastern")).isoformat()}
+        try:
+            db._insert("logs", [{
+                "level": "ERROR", "component": "Engine",
+                "message": f"run_cycle failed: {e}", "payload": {"traceback": tb[-2000:]},
+            }])
+        except Exception:
+            pass
+        return err
+
+
 if __name__ == "__main__":
-    out = run_cycle()
+    out = run_cycle_safe()
     print(json.dumps({k: v for k, v in out.items() if k != "top_signals"}, indent=2, default=str)[:1500])

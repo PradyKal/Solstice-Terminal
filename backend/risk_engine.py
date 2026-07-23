@@ -50,6 +50,10 @@ class RiskEngine:
         return None
 
     def size_position(self, price: float, atr: float) -> Dict:
+        # Defensive guards: never divide by a non-positive ATR or price.
+        # (can_size already rejects these, but size_position must be safe standalone.)
+        if not (atr and atr > 0) or not (price and price > 0):
+            return {"shares": 0.0, "capital": 0.0}
         shares = self.cfg.target_risk_usd / atr
         capital = shares * price
         if capital > self.cfg.max_position_usd:

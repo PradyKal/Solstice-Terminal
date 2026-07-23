@@ -52,7 +52,7 @@ def get_universe_data(universe, period='2y', force_refresh=False):
     for fn in os.listdir(CACHE_DIR):
         if fn.startswith('universe_') and fn != f'universe_{key}.pkl':
             try: os.remove(f'{CACHE_DIR}/{fn}')
-            except: pass
+            except OSError: pass
     return out, False   # cache miss
 
 
