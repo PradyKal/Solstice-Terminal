@@ -232,11 +232,8 @@
 
   /* ---------- Init ---------- */
   function init() {
-    heroDist(); heroPaths(); heatmap();
-    spark('sparkA', 'rgba(56,230,255,0.9)', true);
-    spark('sparkB', 'rgba(248,113,113,0.9)', false);
-    initObservers();
-    loadSupabaseData();
+    initObservers();      // reveals + counters + self-drawing distribution
+    loadSupabaseData();   // footer links + last-cycle stat (unchanged integration)
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
