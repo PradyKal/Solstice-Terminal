@@ -1,6 +1,5 @@
-"""Deck simulation and combinatorial enumeration."""
+"""Deck simulation."""
 import numpy as np
-from itertools import combinations
 
 RANKS = '23456789TJQKA'
 SUITS = 'cdhs'
@@ -13,6 +12,3 @@ def shuffle(rng=None):
 def deal(n_hands=2, cards_per=2, rng=None):
     deck = shuffle(rng)
     return [deck[i::n_hands][:cards_per] for i in range(n_hands)]
-
-def enumerate_combos(deck, n=5):
-    return list(combinations(deck, n))
