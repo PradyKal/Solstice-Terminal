@@ -1,22 +1,24 @@
 # Solstice Terminal
 
-Monte Carlo simulation platform for modeling uncertainty and probabilistic outcomes across any domain.
+Monte Carlo simulation platform for modeling uncertainty and probabilistic outcomes.
+
+## Run
+
+```bash
+pip install -r requirements.txt
+python app.py
+# Open http://localhost:8080
+```
+
+Login: `PradyKal` / `@Prady0901`
 
 ## Structure
 
 ```
-src/mc/          Monte Carlo engine (GBM, MCMC, cards, sports)
-src/prob/        Probability & statistics (distributions, Bayesian, hypothesis testing, calibration)
-server.py        API server
-index.html       Landing page
-login.html       Login (PradyKal / @Prady0901)
-terminal.html    Terminal with Monte Carlo simulator, card probability, sports models, Bayesian inference
+app.py              Flask server (all computation server-side)
+templates/          HTML templates (no logic, no credentials)
+src/mc/             Monte Carlo engine (GBM, MCMC, cards, sports)
+src/prob/           Probability & statistics (distributions, Bayesian, hypothesis testing)
 ```
 
-## Quick Start
-
-```bash
-python -c "from src.mc.gbm import simulate; paths = simulate(spot=100, mu=0.10, sigma=0.25, horizon=252, runs=100000)"
-```
-
-Open `index.html` in a browser to use the terminal interface.
+All computation runs in Python on the server. The browser is a thin display layer.
