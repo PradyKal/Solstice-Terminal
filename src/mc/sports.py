@@ -1,4 +1,4 @@
-"""Sports probability models — Poisson, Elo, Bayesian skill."""
+"""Sports probability models."""
 import numpy as np
 from scipy import stats
 
@@ -13,11 +13,3 @@ def elo_expected(rating_a, rating_b):
 def elo_update(winner_rating, loser_rating, k=32):
     expected = elo_expected(winner_rating, loser_rating)
     return winner_rating + k * (1 - expected), loser_rating - k * (1 - expected)
-
-def bayesian_skill(observed_wins, observed_losses, prior_alpha=2, prior_beta=2):
-    posterior_alpha = prior_alpha + observed_wins
-    posterior_beta = prior_beta + observed_losses
-    return {
-        'win_rate': posterior_alpha / (posterior_alpha + posterior_beta),
-        'credible_interval': stats.beta.interval(0.95, posterior_alpha, posterior_beta)
-    }
