@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOLSTICE · Terminal</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#06080c;color:#d8dde9;font-family:'JetBrains Mono',monospace;font-size:12px;height:100%}
+body{display:grid;grid-template-rows:40px 1fr;height:100vh;overflow:hidden}
+.topbar{display:flex;align-items:center;padding:0 18px;background:#0b0e15;border-bottom:1px solid #1a2030;gap:20px}
+.topbar .brand{letter-spacing:0.35em;color:#06b6d4;font-weight:700;font-size:13px}
+.topbar .brand::before{content:'◆ ';font-size:10px}
+.topbar .nav{display:flex;gap:4px;flex:1}
+.topbar .nav a{padding:6px 14px;font-size:11px;letter-spacing:0.2em;color:#6b7187;text-decoration:none;border:1px solid transparent}
+.topbar .nav a.active{color:#06b6d4;border-color:#06b6d4;background:rgba(6,182,212,0.05)}
+.topbar .nav a:hover{color:#d8dde9;border-color:#1a2030}
+.topbar .exit{padding:4px 10px;border:1px solid #1a2030;color:#6b7187;font-size:10px;letter-spacing:0.2em;text-decoration:none}
+.topbar .exit:hover{color:#ef4444;border-color:#ef4444}
+.main{display:flex;overflow:hidden}
+.sidebar{width:140px;background:#0b0e15;border-right:1px solid #1a2030;padding:8px 0}
+.sidebar a{display:block;padding:8px 14px;color:#6b7187;font-size:11px;letter-spacing:0.15em;text-decoration:none;border-left:2px solid transparent}
+.sidebar a:hover{background:#11151f;color:#d8dde9}
+.sidebar a.active{color:#06b6d4;border-left-color:#06b6d4;background:#11151f}
+.content{flex:1;overflow:auto;padding:16px}
+.page{display:none}
+.page.active{display:block}
+.page h2{font-size:13px;font-weight:600;letter-spacing:0.25em;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid #1a2030;color:#d8dde9}
+.page h2::before{content:'› ';color:#06b6d4}
+.panel{border:1px solid #1a2030;background:#0b0e15;margin-bottom:14px;position:relative}
+.panel::before{content:'';position:absolute;top:0;left:0;width:20px;height:2px;background:#06b6d4}
+.panel-h{padding:8px 12px;border-bottom:1px solid #1a2030;background:#11151f;color:#d8dde9;letter-spacing:0.25em;font-size:10px;font-weight:600}
+.panel-body{padding:12px}
+.grid{display:grid;gap:14px}
+.grid.c2{grid-template-columns:1fr 1fr}
+canvas{width:100%!important;height:auto!important;max-height:300px}
+label{font-size:10px;color:#6b7187;letter-spacing:0.15em;display:block;margin-bottom:4px}
+input{background:#06080c;border:1px solid #1a2030;color:#d8dde9;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:11px;outline:none;width:100%;margin-bottom:10px}
+input:focus{border-color:#06b6d4}
+button{padding:10px 20px;background:rgba(6,182,212,0.05);border:1px solid #06b6d4;color:#06b6d4;
+  font-family:'JetBrains Mono',monospace;font-weight:600;letter-spacing:0.25em;font-size:11px;cursor:pointer;transition:all 0.2s}
+button:hover{background:#06b6d4;color:#06080c;box-shadow:0 0 20px rgba(6,182,212,0.3)}
+table{width:100%;border-collapse:collapse;font-size:11px}
+th{text-align:left;font-weight:500;color:#3d4459;letter-spacing:0.2em;border-bottom:1px solid #1a2030;padding:6px 10px;font-size:10px;background:#11151f}
+td{border-bottom:1px solid rgba(255,255,255,0.03);padding:5px 10px}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+td.pos{color:#10b981}
+td.neg{color:#ef4444}
+td.dim{color:#6b7187}
+.empty{padding:40px;text-align:center;color:#3d4459;letter-spacing:0.2em;font-size:11px}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:#06080c}
+::-webkit-scrollbar-thumb{background:#1a2030}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">SOLSTICE</div>
+  <nav class="nav">
+    <a href="#simulate" class="active">SIMULATE</a>
+    <a href="#cards">CARDS</a>
+    <a href="#sports">SPORTS</a>
+    <a href="#bayes">BAYES</a>
+  </nav>
+  <a href="/logout" class="exit">EXIT</a>
+</header>
+<div class="main">
+  <nav class="sidebar">
+    <a href="#simulate" class="active">SIMULATE</a>
+    <a href="#cards">CARDS</a>
+    <a href="#sports">SPORTS</a>
+    <a href="#bayes">BAYES</a>
+  </nav>
+  <div class="content">
+    <div id="page-simulate" class="page active"></div>
+    <div id="page-cards" class="page"></div>
+    <div id="page-sports" class="page"></div>
+    <div id="page-bayes" class="page"></div>
+  </div>
+</div>
+<script>
+var charts = {};
+
+function buildSimulate() {
+  var p = document.getElementById('page-simulate');
+  p.innerHTML = '<h2>MONTE CARLO · GBM</h2><div class="grid c2">' +
+    '<div class="panel"><div class="panel-h">PARAMETERS</div><div class="panel-body">' +
+    '<label>SPOT PRICE</label><input id="spot" value="100">' +
+    '<label>ANNUALIZED RETURN (μ)</label><input id="mu" value="0.10">' +
+    '<label>ANNUALIZED VOLATILITY (σ)</label><input id="sigma" value="0.25">' +
+    '<label>HORIZON (DAYS)</label><input id="horizon" value="252">' +
+    '<label>SIMULATIONS (RUNS)</label><input id="runs" value="100000">' +
+    '<button onclick="runMC()">RUN SIMULATION</button></div></div>' +
+    '<div class="panel"><div class="panel-h">DISTRIBUTION</div><div class="panel-body"><canvas id="mc-chart"></canvas></div></div>' +
+    '<div class="panel"><div class="panel-h">RESULTS</div><div class="panel-body"><table><tbody id="mc-results"></tbody></table></div></div>' +
+    '<div class="panel"><div class="panel-h">PATH SAMPLE</div><div class="panel-body"><canvas id="mc-paths"></canvas></div></div>' +
+    '</div>';
+}
+
+async function runMC() {
+  var body = {
+    spot: +document.getElementById('spot').value,
+    mu: +document.getElementById('mu').value,
+    sigma: +document.getElementById('sigma').value,
+    horizon: +document.getElementById('horizon').value,
+    runs: Math.min(+document.getElementById('runs').value, 200000)
+  };
+  var r = await fetch('/api/mc/gbm', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  var d = await r.json();
+
+  document.getElementById('mc-results').innerHTML =
+    '<tr><td class="dim">Mean Final Price</td><td class="num bold">$'+(body.spot*(1+d.mean_return)).toFixed(2)+'</td></tr>'+
+    '<tr><td class="dim">Expected Return</td><td class="num '+(d.mean_return>=0?'pos':'neg')+'">'+(d.mean_return*100).toFixed(2)+'%</td></tr>'+
+    '<tr><td class="dim">Volatility (σ)</td><td class="num">'+(d.std_return*100).toFixed(2)+'%</td></tr>'+
+    '<tr><td class="dim">P(Up)</td><td class="num pos">'+(d.prob_up*100).toFixed(1)+'%</td></tr>'+
+    '<tr><td class="dim">VaR 95%</td><td class="num neg">'+(d.var_95*100).toFixed(2)+'%</td></tr>'+
+    '<tr><td class="dim">CVaR 95%</td><td class="num neg">'+(d.cvar_95*100).toFixed(2)+'%</td></tr>';
+
+  // Distribution histogram
+  var hist = new Array(50).fill(0);
+  var minR = d.var_95 * 1.5, maxR = Math.max(d.mean_return*2, 0.1);
+  var bw = (maxR - minR) / 50;
+  // Server returns percentiles; we approximate distribution as normal
+  var centers = hist.map(function(_,i){return (minR+(i+0.5)*bw)*100});
+  // Generate synthetic histogram from normal params
+  for (var i=0;i<100000;i++) {
+    var v = d.mean_return + d.std_return * randn();
+    var idx = Math.min(49, Math.max(0, Math.floor((v - minR) / bw)));
+    hist[idx]++;
+  }
+  if (charts.mc) charts.mc.destroy();
+  charts.mc = new Chart(document.getElementById('mc-chart'), {
+    type:'bar', data:{labels:centers.map(function(v){return v.toFixed(1)+'%'}), datasets:[{
+      label:'', data:hist, backgroundColor:'rgba(6,182,212,0.4)', borderColor:'#06b6d4', borderWidth:1
+    }]}, options:{responsive:true, plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{display:false}}}
+  });
+
+  // Path sample
+  if (charts.paths) charts.paths.destroy();
+  var paths = d.path_sample || [];
+  charts.paths = new Chart(document.getElementById('mc-paths'), {
+    type:'line', data:{datasets:paths.map(function(p){
+      return {label:'', data:p, borderColor:'rgba(6,182,212,0.08)', borderWidth:0.5, pointRadius:0, tension:0.1};
+    })}, options:{responsive:true, animation:false, plugins:{legend:{display:false}}, scales:{x:{display:false}, y:{display:false}}}
+  });
+}
+
+function randn() {
+  var u=0,v=0;
+  while(u===0) u=Math.random();
+  while(v===0) v=Math.random();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);
+}
+
+function buildCards() {
+  var p = document.getElementById('page-cards');
+  p.innerHTML = '<h2>CARD PROBABILITY</h2><div class="grid c2">' +
+    '<div class="panel"><div class="panel-h">DECK SIMULATION</div><div class="panel-body">' +
+    '<label>HANDS</label><input id="c-hands" value="2">' +
+    '<label>CARDS PER HAND</label><input id="c-cards" value="5">' +
+    '<button onclick="runCards()">DEAL</button></div></div>' +
+    '<div class="panel"><div class="panel-h">DEAL RESULTS</div><div class="panel-body"><div id="c-results"></div></div></div>' +
+    '</div>';
+}
+
+async function runCards() {
+  var body = {n_hands: +document.getElementById('c-hands').value, cards_per: +document.getElementById('c-cards').value};
+  var r = await fetch('/api/mc/cards', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  var d = await r.json();
+  var suits = {'c':'♣','d':'♦','h':'♥','s':'♠'};
+  document.getElementById('c-results').innerHTML = d.hands.map(function(h,i){
+    return '<div style="margin-bottom:8px"><span class="dim">Hand '+(i+1)+':</span> '+h.map(function(c){return c[0]+suits[c[1]]}).join(' ')+'</div>';
+  }).join('');
+}
+
+function buildSports() {
+  var p = document.getElementById('page-sports');
+  p.innerHTML = '<h2>SPORTS PROBABILITY</h2><div class="grid c2">' +
+    '<div class="panel"><div class="panel-h">POISSON MATCH MODEL</div><div class="panel-body">' +
+    '<label>HOME STRENGTH</label><input id="s-home" value="0.5">' +
+    '<label>AWAY STRENGTH</label><input id="s-away" value="0.2">' +
+    '<button onclick="runSports()">COMPUTE</button></div></div>' +
+    '<div class="panel"><div class="panel-h">MATCH PROBABILITIES</div><div class="panel-body"><div id="s-results"></div></div></div>' +
+    '<div class="panel"><div class="panel-h">ELO RATING</div><div class="panel-body">' +
+    '<label>RATING A</label><input id="s-ra" value="1500">' +
+    '<label>RATING B</label><input id="s-rb" value="1400">' +
+    '<button onclick="runElo()">COMPUTE</button></div></div>' +
+    '<div class="panel"><div class="panel-h">EXPECTED WIN PROBABILITY</div><div class="panel-body"><div id="s-elo-results"></div></div></div>' +
+    '</div>';
+}
+
+async function runSports() {
+  var body = {home_strength: +document.getElementById('s-home').value, away_strength: +document.getElementById('s-away').value};
+  var r = await fetch('/api/sports/poisson', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  var d = await r.json();
+  document.getElementById('s-results').innerHTML =
+    '<div>Home Win: <span class="pos">'+(d.home_win*100).toFixed(1)+'%</span></div>'+
+    '<div>Away Win: <span class="neg">'+((1-d.home_win)*100).toFixed(1)+'%</span></div>';
+}
+
+async function runElo() {
+  var body = {rating_a: +document.getElementById('s-ra').value, rating_b: +document.getElementById('s-rb').value};
+  var r = await fetch('/api/sports/elo', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  var d = await r.json();
+  document.getElementById('s-elo-results').innerHTML =
+    '<div>P(A beats B): <span class="pos">'+(d.expected*100).toFixed(1)+'%</span></div>'+
+    '<div>P(B beats A): <span class="neg">'+((1-d.expected)*100).toFixed(1)+'%</span></div>';
+}
+
+function buildBayes() {
+  var p = document.getElementById('page-bayes');
+  p.innerHTML = '<h2>BAYESIAN INFERENCE</h2><div class="grid c2">' +
+    '<div class="panel"><div class="panel-h">BETA-BERNOULLI</div><div class="panel-body">' +
+    '<label>PRIOR α</label><input id="b-alpha" value="2">' +
+    '<label>PRIOR β</label><input id="b-beta" value="2">' +
+    '<label>OBSERVED SUCCESSES</label><input id="b-s" value="8">' +
+    '<label>OBSERVED FAILURES</label><input id="b-f" value="2">' +
+    '<button onclick="runBayes()">UPDATE</button></div></div>' +
+    '<div class="panel"><div class="panel-h">POSTERIOR DISTRIBUTION</div><div class="panel-body"><canvas id="bayes-chart"></canvas></div></div>' +
+    '<div class="panel"><div class="panel-h">POSTERIOR STATS</div><div class="panel-body"><table><tbody id="bayes-stats"></tbody></table></div></div>' +
+    '<div class="panel"><div class="panel-h">PRIOR VS POSTERIOR</div><div class="panel-body"><canvas id="bayes-compare"></canvas></div></div>' +
+    '</div>';
+}
+
+async function runBayes() {
+  var body = {alpha: +document.getElementById('b-alpha').value, beta: +document.getElementById('b-beta').value,
+    successes: +document.getElementById('b-s').value, failures: +document.getElementById('b-f').value};
+  var r = await fetch('/api/prob/bayes', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)});
+  var d = await r.json();
+
+  document.getElementById('bayes-stats').innerHTML =
+    '<tr><td class="dim">Posterior Mean</td><td class="num pos">'+(d.mean*100).toFixed(1)+'%</td></tr>'+
+    '<tr><td class="dim">95% Credible Interval</td><td class="num">['+(d.ci[0]*100).toFixed(1)+'%, '+(d.ci[1]*100).toFixed(1)+'%]</td></tr>';
+
+  if (charts.bayes) charts.bayes.destroy();
+  charts.bayes = new Chart(document.getElementById('bayes-chart'), {
+    type:'line', data:{labels:d.x.map(function(v){return (v*100).toFixed(0)+'%'}),
+    datasets:[{label:'Posterior',data:d.posterior,borderColor:'#06b6d4',backgroundColor:'rgba(6,182,212,0.15)',fill:true,pointRadius:0}]},
+    options:{responsive:true,plugins:{legend:{display:false}},scales:{x:{display:false},y:{display:false}}}
+  });
+  if (charts.bayes2) charts.bayes2.destroy();
+  charts.bayes2 = new Chart(document.getElementById('bayes-compare'), {
+    type:'line', data:{labels:d.x.map(function(v){return (v*100).toFixed(0)+'%'}),
+    datasets:[
+      {label:'Prior',data:d.prior,borderColor:'#6b7187',borderDash:[3,3],pointRadius:0,fill:false},
+      {label:'Posterior',data:d.posterior,borderColor:'#06b6d4',pointRadius:0,fill:false}
+    ]}, options:{responsive:true,plugins:{legend:{labels:{color:'#6b7187',font:{size:10}}}},
+      scales:{x:{display:false},y:{display:false}}}
+  });
+}
+
+// Router
+var pages = ['simulate','cards','sports','bayes'];
+function route(){
+  var hash = location.hash.replace('#','') || 'simulate';
+  if(!pages.includes(hash)) hash='simulate';
+  pages.forEach(function(p){
+    document.getElementById('page-'+p).classList.toggle('active',p===hash);
+  });
+  document.querySelectorAll('.sidebar a').forEach(function(a){
+    a.classList.toggle('active',a.getAttribute('href')==='#'+hash);
+  });
+  document.querySelectorAll('.nav a').forEach(function(a){
+    a.classList.toggle('active',a.getAttribute('href')==='#'+hash);
+  });
+  if(hash==='simulate'&&!document.getElementById('page-simulate').innerHTML) buildSimulate();
+  if(hash==='cards'&&!document.getElementById('page-cards').innerHTML) buildCards();
+  if(hash==='sports'&&!document.getElementById('page-sports').innerHTML) buildSports();
+  if(hash==='bayes'&&!document.getElementById('page-bayes').innerHTML) buildBayes();
+}
+window.addEventListener('hashchange',route);
+route();
+</script>
+</body>
+</html>
