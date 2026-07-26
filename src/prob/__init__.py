@@ -1,1 +1,1 @@
-"""Probability distributions, Bayesian inference, hypothesis testing."""
+# Probability and statistics
