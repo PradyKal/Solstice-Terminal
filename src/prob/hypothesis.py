@@ -1,5 +1,4 @@
-"""Statistical hypothesis testing — deflated Sharpe, PSR, multiple-testing correction.
-Ref: Bailey & Lopez de Prado (2014), "The Deflated Sharpe Ratio"."""
+"""Hypothesis testing."""
 import numpy as np
 from scipy import stats
 
@@ -27,20 +26,3 @@ def deflated_sharpe_ratio(returns, n_trials, periods_per_year=252/5):
     skew = stats.skew(r); kurt = stats.kurtosis(r, fisher=False)
     den = np.sqrt(1 - skew*sr_per + (kurt-1)/4 * sr_per**2)
     return float(stats.norm.cdf(num/den)) if den > 0 else 0.0
-
-def min_track_record(returns, target_sr=1.0, periods_per_year=252/5, conf=0.95):
-    r = np.asarray(returns, dtype=float)
-    if len(r) < 5 or r.std() == 0: return float('inf')
-    sr = r.mean()/r.std(); skew = stats.skew(r); kurt = stats.kurtosis(r, fisher=False)
-    z = stats.norm.ppf(conf)
-    target_per = target_sr/np.sqrt(periods_per_year)
-    denom = (sr - target_per)**2
-    if denom <= 0: return float('inf')
-    return float(1 + (1 - skew*sr + (kurt-1)/4*sr**2) * (z/np.sqrt(denom))**2)
-
-def brier_score(probabilities, outcomes):
-    return float(np.mean((np.array(probabilities) - np.array(outcomes))**2))
-
-def log_loss(probabilities, outcomes):
-    p = np.clip(np.array(probabilities), 1e-15, 1-1e-15)
-    return float(-np.mean(np.array(outcomes) * np.log(p) + (1-np.array(outcomes)) * np.log(1-p)))
