@@ -1,7 +1,8 @@
-yfinance
-pandas
 numpy
 scipy
-pytz
-supabase
+pandas
+yfinance
 requests
+pytz
+textblob
+statsmodels
