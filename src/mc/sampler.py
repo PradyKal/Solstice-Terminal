@@ -1,4 +1,4 @@
-"""MCMC, importance sampling, SMC."""
+"""MCMC and importance sampling."""
 import numpy as np
 
 def metropolis_hastings(log_target, n_samples, proposal_std=0.1, init=0.0, rng=None):
