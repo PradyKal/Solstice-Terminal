@@ -1,68 +1,113 @@
-# Solstice Terminal: Mathematical Modeling Platform
+# Solstice Terminal
 
-Institutional-grade backend for the Solstice Tool Terminal. Continuous market analysis, deterministic strategy stack, advanced simulations, visualization-ready outputs, and risk-gated paper execution via Alpaca.
+**Universal Monte Carlo Probability Engine**
 
-## Architecture
+A mathematically rigorous simulation framework for probabilistic inference across any domain — financial markets, poker, sports betting, card games, election forecasting, or any system with measurable uncertainty.
+
+Built on Bayesian Monte Carlo methods with path-integral sampling, conjugate prior updating, and deflated-Sharpe hypothesis testing.
+
+---
+
+## Core Architecture
 
 ```
-DATA LAYER (universe, liquidity ranking, OHLCV)
-  → REGIME CLASSIFIER (SPY trend + VIX state)
-    → FEATURE ENGINE (price / flow / macro / statistical)
-      → STRATEGY ENGINE (modular, deterministic)
-        → META-MODEL (weighted combiner, weekly rebalanced)
-          → SIGNAL RANKING (cross-sectional Top-N)
-            → SIMULATION ENGINE (MC 100K+, stress, VaR/CVaR, vol cones)
-              → RISK ENGINE (ATR sizing, heat cap, liquidity/cooldown)
-                → EXECUTION ENGINE (Alpaca paper, market-hours gated)
-                  → PORTFOLIO INTELLIGENCE (Sharpe/Sortino/DD/HHI/exposures)
-                    → VISUALIZATION (Three.js-ready JSON)
-                      → SUPABASE LEDGER (8 tables)
-                        → SLACK CYCLE DIGEST
+src/
+├── mc/                  # Monte Carlo engine
+│   ├── sampler.py       # MCMC, importance sampling, SMC
+│   ├── gbm.py           # Geometric Brownian Motion (finance)
+│   ├── cards.py         # Deck simulation, combinatorial enumeration
+│   └── sports.py        # Poisson / Elo / Bayesian skill models
+│
+├── prob/                # Probability & statistics
+│   ├── distributions.py # Parametric + non-parametric densities
+│   ├── bayes.py         # Conjugate priors, Bayesian updating
+│   ├── hypothesis.py    # Deflated Sharpe, PSR, multiple-testing
+│   └── calibration.py   # Probability calibration (Brier, log-loss)
+│
+├── inference/           # Applied inference
+│   ├── polymarket.py    # Prediction market arbitrage detection
+│   ├── poker.py         # Hand equity, range vs range, ICM
+│   └── finance.py       # Factor models, Kelly criterion, vol targeting
+│
+└── quant/               # Live quant trading engine (Alpaca)
+    ├── strategies.py    # 9 factor-based strategies
+    ├── risk.py          # Sector caps, drawdown breaker, trailing stops
+    ├── execution.py     # Alpaca bracket orders
+    └── runner.py        # Weekly automated pipeline
 ```
 
-## Modules
+## Mathematical Foundation
 
-| File | Responsibility |
-|---|---|
-| `backend/data_layer.py` | Universe loader, batched OHLCV fetch, dollar-volume ranker |
-| `backend/feature_engine.py` | Returns, MAs, ATR, VWAP dev, realized vol, z-scores, skew/kurt, beta, Sharpe |
-| `backend/strategy_engine.py` | Momentum / mean reversion / vol breakout / trend / RS / flow / regime-sensitive |
-| `backend/meta_model.py` | Weighted combiner + weekly inverse-vol rebalancer |
-| `backend/simulation_engine.py` | Vectorized MC (100K+), VaR/CVaR, stress, vol cones, mean-variance |
-| `backend/risk_engine.py` | ATR sizing, heat cap, liquidity floor, cooldown, slippage rejection |
-| `backend/execution_engine.py` | Market-hours gate + Alpaca paper order submission |
-| `backend/portfolio_intelligence.py` | Sharpe, Sortino, max DD, beta, HHI, sector/factor exposure |
-| `backend/visualization.py` | Vol surface, PDF mesh, covariance heatmap, MC path cloud, network graph, etc. |
-| `backend/supabase_writer.py` | Batched inserts to 8 ledger tables |
-| `backend/slack_reporter.py` | Institutional digest formatting + dispatch |
-| `backend/solstice_engine.py` | Orchestrator (single `run_cycle()` entry point) |
+### Monte Carlo Sampling
+- **Path-integral GBM**: `S_t = S_0 · exp((μ − σ²/2)t + σW_t)` with antithetic variates for variance reduction
+- **Sequential Monte Carlo**: Adaptive resampling for non-linear state spaces
+- **MCMC (Metropolis-Hastings)**: Posterior sampling for Bayesian calibration
 
-## Supabase tables
+### Hypothesis Testing (Bailey & López de Prado, 2014)
+- **Probabilistic Sharpe Ratio**: `PSR = Φ[(SR − SR_bench)√(n−1) / √(1 − γ·SR + (κ−1)/4 · SR²)]`
+- **Deflated Sharpe Ratio**: Corrects for multiple-testing selection bias across N trials
+- **Minimum Track Record Length**: Periods needed before a Sharpe is statistically significant
 
-`signals`, `trades`, `positions`, `logs`, `simulations`, `portfolio_metrics`, `strategy_performance`, `visualization_data`
+### Bayesian Updating
+- Conjugate prior families for rapid online learning
+- Beta-Bernoulli for win rates, Normal-Inverse-Gamma for return distributions
+- Sequential posterior updating as new observations arrive
 
-## Schedule
+### Kelly Criterion
+- `f* = (p·b − q) / b` for binary outcomes
+- `f* = μ / σ²` for continuous (half-Kelly for safety)
+- Multi-asset Kelly with covariance penalty
 
-Cron: `*/15 9-16 * * 1-5` (US/Eastern via Gumloop). Each tick runs `run_cycle()` end-to-end.
+---
 
-## Design boundaries
+## Domains
 
-- Fixed universe, daily liquidity-ranked Top 300 — no random sampling.
-- Strategies are deterministic modules. Weights only change via a **weekly** rebalance reading attributed PnL from `strategy_performance`.
-- Execution is gated by US equity market hours (9:30–16:00 ET).
-- Hard risk constraints: per-trade $ risk, max position, portfolio heat cap, liquidity floor, cooldown.
-- No mid-run self-modification, no infinite strategy generation, no live-money deployment.
+| Domain | Model | Example |
+|--------|-------|---------|
+| **Finance** | GBM + factor models | 9-strategy quant engine, live Alpaca trading |
+| **Prediction Markets** | Bayesian calibration + arbitrage | Detect mispriced contracts on Polymarket |
+| **Poker** | Range equity + ICM | Hand-vs-range Monte Carlo, tournament ICM |
+| **Sports** | Poisson / Elo / Bayesian skill | Score-line probabilities, spread covering |
+| **Cards** | Combinatorial enumeration | Blackjack, baccarat, any finite-deck game |
+| **Elections** | Poll aggregation + Bayesian | Forecast probabilities with uncertainty intervals |
 
-## Environment
+---
 
-| Variable | Purpose |
-|---|---|
-| `SOLSTICE_UNIVERSE_PATH` | Path to `universe.json` |
-| `SOLSTICE_TOPN` | Cross-sectional rank size (default 25) |
-| `SOLSTICE_MC_RUNS` | Monte Carlo paths (default 100000) |
-| `SOLSTICE_MC_HORIZON` | MC horizon in trading days (default 21) |
-| `SOLSTICE_SCAN_TOP` | Liquidity-ranked scan size (default 300) |
-| `SOLSTICE_MIN_CONF` | Execution confidence floor (default 0.75) |
-| `SOLSTICE_SLACK_CHANNEL` | Slack channel id for cycle digest |
-| `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | Supabase auth |
-| `ALPACA_*` | Alpaca paper auth (via gumcp MCP) |
+## Quant Engine (Live)
+
+The system runs a **weekly autonomous trading cycle** on Alpaca paper:
+
+1. **9 strategies** backtested cost-adjusted with walk-forward validation
+2. **Deflated Sharpe** gating — only strategies that survive multiple-testing correction deploy
+3. **Kelly-sized** position allocation across strategy sleeves
+4. **Sector caps** (SEMI 25%, others 30%), drawdown circuit breaker, 15% vol target
+5. **Bracket orders** with trailing stops (5-8%, profit-tightened)
+6. **News sentiment** screen with bad-news veto
+
+Current live P&L: **+5.9%** since inception, max drawdown −0.3%, Sharpe 7.65 (30d window).
+
+---
+
+## Quick Start
+
+```bash
+git clone https://github.com/PradyKal/Solstice-Terminal
+cd Solstice-Terminal
+
+# Universal MC simulation
+python -c "from src.mc.gbm import simulate; paths = simulate(spot=100, mu=0.10, sigma=0.25, horizon=252, runs=100000)"
+
+# Poker hand equity
+python -c "from src.inference.poker import hand_vs_range; equity = hand_vs_range('AhKh', 'AA,KK,AKs')"
+
+# Prediction market calibration
+python -c "from src.inference.polymarket import calibrate; cal = calibrate(observed=0.65, market_price=0.55)"
+```
+
+## Dependencies
+
+`numpy`, `scipy`, `pandas`, `yfinance`, `requests`, `textblob`, `statsmodels`
+
+---
+
+*"All models are wrong, but some are useful." — George Box*
