@@ -1,1 +1,1 @@
-"""Monte Carlo sampling engine — GBM, MCMC, SMC, importance sampling."""
+# Monte Carlo simulation engine
