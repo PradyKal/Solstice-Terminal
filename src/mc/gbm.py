@@ -3,7 +3,7 @@ import numpy as np
 
 def simulate(spot, mu, sigma, horizon=252, runs=100000, antithetic=True, rng=None):
     rng = rng or np.random.default_rng()
-    dt = 1.0 / 252  # daily timestep
+    dt = 1.0 / 252
     drift = (mu - 0.5 * sigma**2) * dt
     vol = sigma * np.sqrt(dt)
     if antithetic:

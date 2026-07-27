@@ -3,7 +3,7 @@ All computation runs server-side in Python. Frontend is a thin display layer."""
 import os, sys, json, hashlib, secrets
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
 from flask import Flask, render_template, request, jsonify, session, redirect
-from mc.gbm import simulate, summary
+from mc.gbm import simulate, summary, stress_scenarios
 from mc.cards import shuffle, deal, hand_probability
 from mc.sports import poisson_match, elo_expected, simulate_tournament
 from prob.bayes import BetaBernoulli
@@ -14,7 +14,6 @@ import numpy as np
 app = Flask(__name__)
 app.secret_key = secrets.token_hex(32)
 
-# Single user, SHA-256 hashed password
 PASSWORD_HASH = hashlib.sha256(b'@Prady0901').hexdigest()
 USERNAME = 'PradyKal'
 
@@ -44,7 +43,7 @@ def terminal():
         return redirect('/login')
     return render_template('terminal.html')
 
-# ─── API: Monte Carlo GBM ───
+# ─── MC: GBM ───
 @app.route('/api/mc/gbm', methods=['POST'])
 def api_gbm():
     d = request.get_json() or {}
@@ -58,34 +57,27 @@ def api_gbm():
     result['path_sample'] = paths[np.random.choice(runs, min(50, runs), replace=False)].round(4).tolist()
     return jsonify(result)
 
-# ─── API: Stress scenarios ───
 @app.route('/api/mc/stress', methods=['POST'])
 def api_stress():
     d = request.get_json() or {}
-    spot = float(d.get('spot', 100))
-    mu = float(d.get('mu', 0.10))
-    sigma = float(d.get('sigma', 0.25))
-    from mc.gbm import stress_scenarios
-    return jsonify(stress_scenarios(spot, mu, sigma))
+    return jsonify(stress_scenarios(
+        float(d.get('spot', 100)), float(d.get('mu', 0.10)), float(d.get('sigma', 0.25))
+    ))
 
-# ─── API: Cards ───
+# ─── MC: Cards ───
 @app.route('/api/mc/cards', methods=['POST'])
 def api_cards():
     d = request.get_json() or {}
-    n_hands = int(d.get('n_hands', 2))
-    cards_per = int(d.get('cards_per', 5))
-    hands = deal(n_hands, cards_per)
+    hands = deal(int(d.get('n_hands', 2)), int(d.get('cards_per', 5)))
     return jsonify({'hands': hands})
 
 @app.route('/api/mc/cards/probability', methods=['POST'])
 def api_cards_prob():
     d = request.get_json() or {}
-    hand_type = d.get('hand_type', 'pair')
-    n_sims = min(int(d.get('n_simulations', 50000)), 200000)
-    prob = hand_probability(hand_type, n_sims)
-    return jsonify({'hand_type': hand_type, 'probability': prob, 'n_simulations': n_sims})
+    prob = hand_probability(d.get('hand_type', 'pair'), min(int(d.get('n_simulations', 50000)), 200000))
+    return jsonify({'hand_type': d.get('hand_type', 'pair'), 'probability': prob})
 
-# ─── API: Sports ───
+# ─── Sports ───
 @app.route('/api/sports/poisson', methods=['POST'])
 def api_poisson():
     d = request.get_json() or {}
@@ -94,17 +86,14 @@ def api_poisson():
 @app.route('/api/sports/elo', methods=['POST'])
 def api_elo():
     d = request.get_json() or {}
-    ra, rb = float(d.get('rating_a', 1500)), float(d.get('rating_b', 1400))
-    return jsonify({'expected': elo_expected(ra, rb)})
+    return jsonify({'expected': elo_expected(float(d.get('rating_a', 1500)), float(d.get('rating_b', 1400)))})
 
 @app.route('/api/sports/tournament', methods=['POST'])
 def api_tournament():
     d = request.get_json() or {}
-    ratings = d.get('ratings', [1500, 1400, 1300])
-    n_sims = min(int(d.get('n_simulations', 10000)), 50000)
-    return jsonify(simulate_tournament(ratings, n_sims))
+    return jsonify(simulate_tournament(d.get('ratings', [1500, 1400, 1300]), min(int(d.get('n_simulations', 10000)), 50000)))
 
-# ─── API: Bayesian ───
+# ─── Bayes ───
 @app.route('/api/prob/bayes', methods=['POST'])
 def api_bayes():
     d = request.get_json() or {}
@@ -115,21 +104,19 @@ def api_bayes():
     posterior = stats.beta.pdf(xs, bb.alpha, bb.beta).tolist()
     prior = stats.beta.pdf(xs, float(d.get('alpha', 1)), float(d.get('beta', 1))).tolist()
     return jsonify({
-        'mean': bb.posterior_mean(),
-        'ci': list(bb.credible_interval()),
+        'mean': bb.posterior_mean(), 'ci': list(bb.credible_interval()),
         'prob_gt_50': bb.probability_greater_than(0.5),
         'prior': prior, 'posterior': posterior, 'x': xs.tolist()
     })
 
-# ─── API: Hypothesis testing ───
+# ─── Hypothesis ───
 @app.route('/api/prob/hypothesis', methods=['POST'])
 def api_hypothesis():
     d = request.get_json() or {}
     returns = d.get('returns', [])
-    n_trials = int(d.get('n_trials', 1))
     return jsonify({
         'psr': probabilistic_sharpe_ratio(returns),
-        'dsr': deflated_sharpe_ratio(returns, n_trials),
+        'dsr': deflated_sharpe_ratio(returns, int(d.get('n_trials', 1))),
         'brier': brier_score([0.5]*len(returns), [1 if r > 0 else 0 for r in returns]) if returns else 0
     })
 
