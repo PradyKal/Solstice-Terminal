@@ -1,4 +1,4 @@
-# Solstice Terminal
+# Solstice Terminal Pradyun Kalagara
 
 Monte Carlo simulation platform for modeling uncertainty and probabilistic outcomes across any domain.
 
@@ -32,22 +32,17 @@ solstice-terminal/
     └── terminal.html
 ```
 
-## Run
-
-```bash
-pip install -r requirements.txt
-python backend/app.py
-# Open http://localhost:8080
-# Login: PradyKal / @Prady0901
+```
 ```
 
-## What you can do
+## What it does
 
 - **SIMULATE**: Run 100K+ Monte Carlo paths on any asset with VaR/CVaR
 - **STRESS TEST**: Vol shocks, bear markets, crash scenarios
 - **CARDS**: Poker hand probabilities, deck simulation
 - **SPORTS**: Poisson match outcomes, Elo ratings, tournament sims
-- **BAYES**: Update beliefs with new evidence
+- **Finance**: Financial modeling, equity probability movement, monthly updates using up to date research in the field
+- **BAYES**: Update old conclusions with new evidence
 - **HYPOTHESIS TEST**: Probabilistic/Deflated Sharpe Ratio
 
 All computation runs in Python. The browser is just a display layer.
