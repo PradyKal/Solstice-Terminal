@@ -1,36 +1,6 @@
 # Solstice Terminal
 
-Monte Carlo simulation platform for modeling uncertainty and probabilistic outcomes across any domain.
-
-## Structure
-
-```
-solstice-terminal/
-├── README.md
-├── requirements.txt
-├── backend/
-│   └── app.py              # Flask server (all computation server-side)
-├── frontend/
-│   ├── index.html           # Landing page
-│   ├── login.html           # Login form (posts to server, SHA-256 hashed)
-│   └── terminal.html        # Terminal UI (calls API endpoints, no local computation)
-├── engine/
-│   └── src/
-│       ├── mc/              # Monte Carlo engine
-│       │   ├── gbm.py       # Geometric Brownian Motion (stock/crypto simulation)
-│       │   ├── sampler.py   # MCMC, importance sampling
-│       │   ├── cards.py     # Deck simulation, poker probabilities
-│       │   └── sports.py    # Poisson match outcomes, Elo ratings
-│       └── prob/            # Probability & statistics
-│           ├── bayes.py     # Beta-Bernoulli conjugate Bayesian updating
-│           ├── hypothesis.py # Probabilistic/Deflated Sharpe Ratio
-│           ├── calibration.py # Brier score, reliability diagrams
-│           └── distributions.py # Normal fitting, KDE, mixture models
-└── templates/               # HTML templates for Flask
-    ├── index.html
-    ├── login.html
-    └── terminal.html
-```
+Monte Carlo simulation platform for modeling uncertainty and probabilistic outcomes across finance, sports, cards, and any domain.
 
 ## Run
 
@@ -41,13 +11,22 @@ python backend/app.py
 # Login: PradyKal / @Prady0901
 ```
 
-## What you can do
+## Structure
 
-- **SIMULATE**: Run 100K+ Monte Carlo paths on any asset with VaR/CVaR
-- **STRESS TEST**: Vol shocks, bear markets, crash scenarios
-- **CARDS**: Poker hand probabilities, deck simulation
-- **SPORTS**: Poisson match outcomes, Elo ratings, tournament sims
-- **BAYES**: Update beliefs with new evidence
-- **HYPOTHESIS TEST**: Probabilistic/Deflated Sharpe Ratio
+```
+Solstice/
+├── backend/app.py          Flask server (all computation server-side)
+├── engine/src/mc/          Monte Carlo engine (GBM, MCMC, cards, sports)
+├── engine/src/prob/        Probability & statistics (Bayes, hypothesis testing, calibration)
+├── templates/              HTML templates
+├── static/css/             Styles
+└── static/js/              Three.js 3D visualizations
+```
 
-All computation runs in Python. The browser is just a display layer.
+## Features
+
+- **GBM Monte Carlo**: 100K+ paths with VaR/CVaR, stress scenarios, 3D path cloud visualization
+- **Card Probability**: Deck simulation, poker hand probabilities
+- **Sports Modeling**: Poisson match outcomes, Elo ratings, tournament simulations
+- **Bayesian Inference**: Beta-Bernoulli conjugate updating with prior/posterior visualization
+- **Hypothesis Testing**: Probabilistic/Deflated Sharpe Ratio, Brier score calibration
