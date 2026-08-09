@@ -2,6 +2,11 @@
 
 Monte Carlo simulation platform for modeling uncertainty and probabilistic outcomes across any domain.
 
+Main methods: Bayesian inference, MCMC sampling, and hypothesis testing with 3D model visualization built with Physics & entropy. 
+
+24 Research Papers cited across physics, mathematics, finance, economics, statistics, game theory, weather forecasting & other probability modeling fields. 
+14 total models built from past research applied to financial mathematics
+
 ## Structure
 
 ```
