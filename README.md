@@ -1,5 +1,7 @@
 # Solstice Terminal Pradyun Kalagara
 
+Code uploaded to GitHub 5/22/26
+
 Monte Carlo simulation platform for modeling uncertainty and probabilistic outcomes across any domain.
 
 Main methods: Bayesian inference, MCMC sampling, and hypothesis testing with 3D model visualization built with Physics & entropy. 
